@@ -53,3 +53,27 @@ is_blended_class(ClassAtom) :-
 % Check if class uses online sync method
 is_online_sync_class(ClassAtom) :-
     class_section(ClassAtom, _, _, _, _, _, online_sync, _, _, _).
+
+% Check if a CRN is online (by checking if it uses online campus or method)
+is_online(CRN) :-
+    (class_section(_, CRN, _, _, _, on, _, _, _, _) ;
+     class_section(_, CRN, _, _, _, _, online_sync, _, _, _) ;
+     class_section(_, CRN, _, _, _, _, online_async, _, _, _)).
+
+% Check if a CRN is hybrid/blended
+is_hybrid(CRN) :-
+    (class_section(_, CRN, _, _, _, _, blended, _, _, _) ;
+     class_section(_, CRN, _, _, _, _, hybrid, _, _, _)).
+
+% Get all sections on a specific campus (by CRN)
+sections_on_campus(Campus, Sections) :-
+    findall(CRN,
+            class_section(_, CRN, _, _, _, Campus, _, _, _, _),
+            Sections).
+
+% Get all sections meeting on a specific day (by CRN)
+sections_on_day(Day, Sections) :-
+    findall(CRN,
+            (schedule(CRN, Day, _, _, _)),
+            SectionList),
+    list_to_set(SectionList, Sections).

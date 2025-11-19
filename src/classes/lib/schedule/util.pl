@@ -74,3 +74,18 @@ date_between(date(Y1,M1,D1), date(Y,M,D), date(Y2,M2,D2)) :-
 % Helper: convert date to days (simple approximation)
 date_to_days(Y,M,D, Days) :-
     Days is Y * 365 + M * 30 + D.
+
+% Get sections meeting in a specific room (by building and room number)
+sections_in_room(Building, RoomNumber, Sections) :-
+    findall(CRN,
+            (room(RoomAtom, Building, RoomNumber, _, _),
+             schedule(CRN, _, _, RoomAtom, _)),
+            SectionList),
+    list_to_set(SectionList, Sections).
+
+% Check if two CRNs have time conflicts (same day and overlapping times)
+time_conflict(CRN1, CRN2) :-
+    CRN1 \= CRN2,
+    schedule(CRN1, Day, TimeAtom1, _, _),
+    schedule(CRN2, Day, TimeAtom2, _,_),
+    time_slots_overlap(TimeAtom1, TimeAtom2).

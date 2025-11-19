@@ -32,7 +32,7 @@ course_display_code(CourseAtom, Code) :-
 % Get course level (1st digit of course number)
 course_level(CourseAtom, Level) :-
     course(CourseAtom, _, Number, _, _, _),
-    atom_number(Number, Num),
+    (number(Number) -> Num = Number ; atom_number(Number, Num)),
     Level is Num // 100.
 
 % Check if course is first year (100-level)
@@ -63,7 +63,19 @@ courses_with_credits(Credits, Courses) :-
 courses_at_level(Level, Courses) :-
     findall(CourseAtom, 
             (course(CourseAtom, _, Number, _, _, _),
-             atom_number(Number, Num),
+             (number(Number) -> Num = Number ; atom_number(Number, Num)),
              Num >= Level * 100,
              Num < (Level + 1) * 100),
             Courses).
+
+% Get all section atoms for a specific course
+course_sections(CourseAtom, Sections) :-
+    findall(SectionAtom,
+            class_section(_, _, CourseAtom, SectionAtom, _, _, _, _, _, _),
+            Sections).
+
+% Get all class information for a course
+course_classes(CourseAtom, Classes) :-
+    findall([ClassAtom, CRN, SectionAtom, InstructorID],
+            class_section(ClassAtom, CRN, CourseAtom, SectionAtom, InstructorID, _, _, _, _, _),
+            Classes).

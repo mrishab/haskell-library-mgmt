@@ -5,7 +5,7 @@
 % utility predicates to provide higher-level reasoning capabilities.
 % ============================================================================
 
-:- consult('kb.pl').
+:- consult('lib/kb.pl').
 :- consult('lib/helper.pl').
 :- consult('lib/util.pl').
 

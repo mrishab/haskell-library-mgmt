@@ -82,3 +82,10 @@ instructor_section_count(InstructorID, Count) :-
             class_section(ClassAtom, _, _, _, InstructorID, _, _, _, _, _),
             Sections),
     length(Sections, Count).
+
+% Get all instructors teaching a specific course
+instructors_for_course(CourseAtom, Instructors) :-
+    findall(InstructorID,
+            class_section(_, _, CourseAtom, _, InstructorID, _, _, _, _, _),
+            InstructorList),
+    list_to_set(InstructorList, Instructors).
