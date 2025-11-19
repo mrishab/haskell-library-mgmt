@@ -5,7 +5,7 @@
 % base and reasoning system using the new data structures.
 % ============================================================================
 
-:- consult('../src/classes/queries/queries.pl').
+:- consult('../../src/classes/queries.pl').
 
 % ============================================================================
 % TEST SECTION 1: BASIC COURSE QUERIES
@@ -88,21 +88,21 @@ test_instructors :-
     writeln(''),
     
     writeln('3.1 Testing instructor_full_name/2:'),
-    instructor_full_name(farshad_eshghi, FarshadName),
-    format('  farshad_eshghi: ~w~n', [FarshadName]),
-    instructor_full_name(cheryl_maranda, CherylName),
-    format('  cheryl_maranda: ~w~n', [CherylName]),
+    instructor_full_name(inst_eshghi, FarshadName),
+    format('  inst_eshghi: ~w~n', [FarshadName]),
+    instructor_full_name(inst_maranda, CherylName),
+    format('  inst_maranda: ~w~n', [CherylName]),
     writeln(''),
     
-    writeln('3.2 Testing courses_by_instructor/2:'),
-    courses_by_instructor(farshad_eshghi, FarshadCourses),
+    writeln('3.2 Testing courses_taught_by/2:'),
+    courses_taught_by(inst_eshghi, FarshadCourses),
     format('  Farshad Eshghi teaches: ~w~n', [FarshadCourses]),
     writeln(''),
     
-    writeln('3.3 Testing instructor_load/2:'),
-    instructor_load(ziaul_hossain, ZiaulLoad),
+    writeln('3.3 Testing instructor_section_count/2:'),
+    instructor_section_count(inst_hossain, ZiaulLoad),
     format('  Ziaul Hossain teaches ~w sections~n', [ZiaulLoad]),
-    instructor_load(chris_bodnar, ChrisLoad),
+    instructor_section_count(inst_bodnar, ChrisLoad),
     format('  Chris Bodnar teaches ~w sections~n', [ChrisLoad]),
     writeln(''),
     
@@ -203,8 +203,8 @@ test_advanced :-
     format('  Popular courses (multiple sections): ~w~n', [Popular]),
     writeln(''),
     
-    writeln('6.2 Testing total_course_capacity/3:'),
-    total_course_capacity(comp, 150, Capacity150),
+    writeln('6.2 Testing total_course_capacity/2:'),
+    total_course_capacity(comp_150, Capacity150),
     format('  Total capacity for COMP 150: ~w students~n', [Capacity150]),
     writeln(''),
     
@@ -236,17 +236,17 @@ test_planning :-
     format('  Found ~w first-year courses~n', [Level1Count]),
     writeln(''),
     
-    writeln('7.2 Testing find_corequisites/3:'),
-    find_corequisites(aded, 365, CoreqsADED365),
+    writeln('7.2 Testing find_corequisites/2:'),
+    find_corequisites(aded_365, CoreqsADED365),
     format('  ADED 365 corequisites: ~w~n', [CoreqsADED365]),
     writeln(''),
     
     writeln('7.3 Testing prerequisite chains for COMP courses:'),
     writeln('  Building prerequisite chain: COMP 230 → COMP 155 → COMP 150'),
-    (prerequisite(comp, 230, comp, 155) ->
+    (prerequisite(comp_230, comp_155) ->
         writeln('  ✓ COMP 230 requires COMP 155') ; 
         writeln('  ✗ Prerequisite not found')),
-    (prerequisite(comp, 155, comp, 150) ->
+    (prerequisite(comp_155, comp_150) ->
         writeln('  ✓ COMP 155 requires COMP 150') ; 
         writeln('  ✗ Prerequisite not found')),
     writeln('').
@@ -262,11 +262,13 @@ test_reports :-
     writeln(''),
     
     writeln('8.1 Generating course offering report for COMP 150:'),
-    course_offering_report(comp, 150),
+    course_offering_report(comp_150, Report),
+    writeln(Report),
     writeln(''),
     
-    writeln('8.2 Generating instructor schedule for Farshad Eshghi:'),
-    instructor_schedule('Farshad Eshghi'),
+    writeln('8.2 Generating instructor schedule for inst_eshghi:'),
+    instructor_schedule(inst_eshghi, Schedule),
+    writeln(Schedule),
     writeln('').
 
 % ============================================================================
