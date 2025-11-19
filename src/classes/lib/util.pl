@@ -1,0 +1,11 @@
+:- consult('campus/util.pl').
+:- consult('class/util.pl').
+:- consult('class_times/util.pl').
+:- consult('course/util.pl').
+:- consult('faculty/util.pl').
+:- consult('instructional_method/util.pl').
+:- consult('instructor/util.pl').
+:- consult('room/util.pl').
+:- consult('schedule/util.pl').
+:- consult('section/util.pl').
+:- consult('time/util.pl').

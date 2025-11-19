@@ -1,0 +1,10 @@
+:- consult('campus/kb.pl').
+:- consult('class/kb.pl').
+:- consult('class_times/kb.pl').
+:- consult('course/kb.pl').
+:- consult('faculty/kb.pl').
+:- consult('instructional_method/kb.pl').
+:- consult('instructor/kb.pl').
+:- consult('room/kb.pl').
+:- consult('schedule/kb.pl').
+:- consult('section/kb.pl').
