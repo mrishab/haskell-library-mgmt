@@ -18,72 +18,39 @@ library_demo(Result) :-
 % ARCHIVAL THESAURUS DEMO QUERIES
 % -----------------------------------------------------------
 
-% Query 1: Find all items by subject with titles
-archival_demo_by_subject(SubjectLabel, Items) :-
-	findall(Title, (has_property(ItemID, subject, SubjectLabel), item(ItemID, Title)), Items).
-
-% Query 2: Find all items in a geographic location with titles
-archival_demo_by_location(LocationLabel, Items) :-
-	findall(Title, (has_property(ItemID, location, LocationLabel), item(ItemID, Title)), Items).
-
-% Query 3: Find all items associated with a corporate body with titles
-archival_demo_by_organization(OrgLabel, Items) :-
-	findall(Title, (has_property(ItemID, corporate_body, OrgLabel), item(ItemID, Title)), Items).
-
-% Query 4: Get full item record with all metadata
-archival_demo_full_record(ItemID, Record) :-
-	item(ItemID, Title),
-	findall(Subj, has_property(ItemID, subject, Subj), Subjects),
-	findall(Agent, has_property(ItemID, agent, Agent), Agents),
-	findall(Loc, has_property(ItemID, location, Loc), Locations),
-	has_description(ItemID, Description),
-	Record = record{
-		item_id: ItemID,
-		title: Title,
-		subjects: Subjects,
-		agents: Agents,
-		locations: Locations,
-		description: Description
-	}.
-
-% Combined archival demo
-archival_demo(Result) :-
-	% Items by subject: Language Education
-	archival_demo_by_subject('Language Education', LanguageItems),
-	% Items by location: Surrey
-	archival_demo_by_location('Surrey', SurreyItems),
-	% Items by organization: PLEA
-	archival_demo_by_organization('Punjabi Language Education Association', PleaItems),
-	Result = archival_demo{
-		items_by_language_subject: LanguageItems,
-		items_in_surrey: SurreyItems,
-		items_by_plea: PleaItems
+archival_demo_derived(Result) :-
+	findall(ItemID, item_in_collection(ItemID, '2020_06'), ItemsInCollection),
+	findall(Item, item_about_subject_in_location(Item, 'Language Education', 'Surrey'), SubjLocItems),
+	findall(Item, item_by_organization_at_location(Item, 'Punjabi Language Education Association', 'Surrey'), OrgLocItems),
+	findall(Item, item_created_by_person(Item, 'Sanghera, Balwant'), PersonItems),
+	collection_has_item_count('2020_06', TotalItems),
+	Result = derived{
+		items_in_collection: ItemsInCollection,
+		language_education_in_surrey: SubjLocItems,
+		plea_in_surrey: OrgLocItems,
+		items_by_sanghera: PersonItems,
+		total_items_in_collection: TotalItems
 	}.
 
 main :-
     writeln('=== LIBRARY DEMO ==='),
     library_demo(R),
-    pretty_print(R),
-    nl, nl,
-    writeln('=== ARCHIVAL THESAURUS DEMO ==='),
-    archival_demo(AR),
-    pretty_print_archival(AR).
-
-pretty_print(demo{available:Available, bob_borrowed:BorrowedByBob}) :-
-    writeln('=== LIBRARY DEMO RESULTS ==='),
-    nl,
-    writeln('Available Books:'),
-    writeln(Available),
-    nl,
-    writeln('Books Borrowed by Bob Smith:'),
-    writeln(BorrowedByBob).
-
-pretty_print_archival(archival_demo{items_by_language_subject:LangItems, items_in_surrey:SurreyItems, items_by_plea:PleaItems}) :-
-    writeln('Items by Language Subject:'),
-    writeln(LangItems),
-    nl,
-    writeln('Items Located in Surrey:'),
-    writeln(SurreyItems),
-    nl,
-    writeln('Items Associated with PLEA:'),
-    writeln(PleaItems).
+    R = demo{available:Available, bob_borrowed:BorrowedByBob},
+    writeln('Available Books:'), writeln(Available), nl,
+    writeln('Books Borrowed by Bob Smith:'), writeln(BorrowedByBob), nl, nl,
+    
+    % writeln('=== ARCHIVAL THESAURUS DEMO ==='),
+    % archival_demo(AR),
+    % AR = archival_demo{items_by_language_subject:LangItems, items_in_surrey:SurreyItems, items_by_plea:PleaItems},
+    % writeln('Items by Language Subject:'), writeln(LangItems), nl,
+    % writeln('Items Located in Surrey:'), writeln(SurreyItems), nl,
+    % writeln('Items Associated with PLEA:'), writeln(PleaItems), nl, nl,
+    
+    writeln('=== ARCHIVAL DERIVED RELATIONSHIPS DEMO ==='),
+    archival_demo_derived(IR),
+    IR = derived{items_in_collection:ItemsInColl, language_education_in_surrey:LangSurrey, plea_in_surrey:PleaSurrey, items_by_sanghera:SangheraItems, total_items_in_collection:Total},
+    writeln('Items in Joan Mayo Fonds Collection:'), writeln(ItemsInColl), nl,
+    writeln('Items about Language Education located in Surrey:'), writeln(LangSurrey), nl,
+    writeln('Items by PLEA in Surrey:'), writeln(PleaSurrey), nl,
+    writeln('Items created by Balwant Sanghera:'), writeln(SangheraItems), nl,
+    writeln('Total items in collection:'), writeln(Total).
