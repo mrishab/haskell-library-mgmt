@@ -86,8 +86,8 @@ course_classes(CourseAtom, Classes) :-
 
 % Find courses with multiple sections (popular courses)
 popular_courses(PopularCourses) :-
-    findall([CourseAtom, Count],
-            (course(CourseAtom, _, _, _, _, _),
+    findall([Faculty, Number, Count],
+            (course(CourseAtom, Faculty, Number, _, _, _),
              findall(CRN, class_section(_, CRN, CourseAtom, _, _, _, _, _, _, _), Sections),
              list_length(Sections, Count),
              Count > 1),
