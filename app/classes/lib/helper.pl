@@ -27,3 +27,13 @@ subset([], _).
 subset([H|T], Set) :-
     member(H, Set),
     subset(T, Set).
+
+% ============================================================================
+% GENERAL PRINTING UTILITIES
+% ============================================================================
+
+% Print a generic list with bullet points
+print_list([]).
+print_list([H|T]) :-
+    format('  - ~w~n', [H]),
+    print_list(T).

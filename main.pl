@@ -1,56 +1,166 @@
-:- consult('app/archives/thesaurus/subjects.pl').
-:- consult('app/archives/thesaurus/person.pl').
-:- consult('app/archives/thesaurus/geographic.pl').
-:- consult('app/archives/thesaurus/corporate_body.pl').
-:- consult('app/archives/archives.pl').
-:- consult('app/archives/data.pl').
-:- consult('app/classes.pl').
-:- consult('app/library.pl').
+% ============================================================================
+% COMP 481 MINI PROJECT 2 - Main Entry Point
+% ============================================================================
+% This is the main entry point for COMP 481 Mini Project 2.
+% It allows users to select which mini-application they want to run:
+%   1. Classes Management System (UFV Knowledge Base)
+%   2. Library Management System  
+%   3. Archives Management System
+% ============================================================================
 
-library_demo(Result) :-
-	% All currently available book titles
-	findall(Title, (available(BID), book(BID, Title, _, _, _)), Available),
-	% Books borrowed by Bob Smith
-	findall(BookTitle, borrowed_by('Bob Smith', BookTitle), BorrowedByBob),
-	Result = demo{available:Available, bob_borrowed:BorrowedByBob}.
-
-% -----------------------------------------------------------
-% ARCHIVAL THESAURUS DEMO QUERIES
-% -----------------------------------------------------------
-
-archival_demo_derived(Result) :-
-	findall(ItemID, item_in_collection(ItemID, '2020_06'), ItemsInCollection),
-	findall(Item, item_about_subject_in_location(Item, 'Language Education', 'Surrey'), SubjLocItems),
-	findall(Item, item_by_organization_at_location(Item, 'Punjabi Language Education Association', 'Surrey'), OrgLocItems),
-	findall(Item, item_created_by_person(Item, 'Sanghera, Balwant'), PersonItems),
-	collection_has_item_count('2020_06', TotalItems),
-	Result = derived{
-		items_in_collection: ItemsInCollection,
-		language_education_in_surrey: SubjLocItems,
-		plea_in_surrey: OrgLocItems,
-		items_by_sanghera: PersonItems,
-		total_items_in_collection: TotalItems
-	}.
+% ============================================================================
+% MAIN MENU
+% ============================================================================
 
 main :-
-    writeln('=== LIBRARY DEMO ==='),
-    library_demo(R),
-    R = demo{available:Available, bob_borrowed:BorrowedByBob},
-    writeln('Available Books:'), writeln(Available), nl,
-    writeln('Books Borrowed by Bob Smith:'), writeln(BorrowedByBob), nl, nl,
-    
-    % writeln('=== ARCHIVAL THESAURUS DEMO ==='),
-    % archival_demo(AR),
-    % AR = archival_demo{items_by_language_subject:LangItems, items_in_surrey:SurreyItems, items_by_plea:PleaItems},
-    % writeln('Items by Language Subject:'), writeln(LangItems), nl,
-    % writeln('Items Located in Surrey:'), writeln(SurreyItems), nl,
-    % writeln('Items Associated with PLEA:'), writeln(PleaItems), nl, nl,
-    
-    writeln('=== ARCHIVAL DERIVED RELATIONSHIPS DEMO ==='),
-    archival_demo_derived(IR),
-    IR = derived{items_in_collection:ItemsInColl, language_education_in_surrey:LangSurrey, plea_in_surrey:PleaSurrey, items_by_sanghera:SangheraItems, total_items_in_collection:Total},
-    writeln('Items in Joan Mayo Fonds Collection:'), writeln(ItemsInColl), nl,
-    writeln('Items about Language Education located in Surrey:'), writeln(LangSurrey), nl,
-    writeln('Items by PLEA in Surrey:'), writeln(PleaSurrey), nl,
-    writeln('Items created by Balwant Sanghera:'), writeln(SangheraItems), nl,
-    writeln('Total items in collection:'), writeln(Total).
+    writeln(''),
+    writeln('╔════════════════════════════════════════════════════════════╗'),
+    writeln('║            COMP 481 MINI PROJECT 2 - MAIN MENU            ║'),
+    writeln('╚════════════════════════════════════════════════════════════╝'),
+    writeln(''),
+    writeln('Select a mini-application to run:'),
+    writeln(''),
+    writeln('  1. Classes Management System (UFV Knowledge Base)'),
+    writeln('     - Course scheduling and timetable management'),
+    writeln('     - Instructor assignments'),
+    writeln('     - Prerequisite tracking'),
+    writeln(''),
+    writeln('  2. Library Management System'),
+    writeln('     - Book catalog management'),
+    writeln('     - Borrowing and returns'),
+    writeln('     - Patron management'),
+    writeln(''),
+    writeln('  3. Archives Management System'),
+    writeln('     - Archival collections management'),
+    writeln('     - Thesaurus and controlled vocabulary'),
+    writeln('     - Subject and location indexing'),
+    writeln(''),
+    writeln('  4. Exit'),
+    writeln(''),
+    write('Enter your choice (1-4): '),
+    flush_output,
+    read_line_to_string(user_input, Input),
+    process_choice(Input).
+
+% ============================================================================
+% CHOICE PROCESSING
+% ============================================================================
+
+process_choice("1") :-
+    !,
+    writeln(''),
+    writeln('Launching Classes Management System...'),
+    writeln(''),
+    run_classes_app,
+    prompt_return_to_menu.
+
+process_choice("2") :-
+    !,
+    writeln(''),
+    writeln('Launching Library Management System...'),
+    writeln(''),
+    run_library_app,
+    prompt_return_to_menu.
+
+process_choice("3") :-
+    !,
+    writeln(''),
+    writeln('Launching Archives Management System...'),
+    writeln(''),
+    run_archives_app,
+    prompt_return_to_menu.
+
+process_choice("4") :-
+    !,
+    writeln(''),
+    writeln('Thank you for using COMP 481 Mini Project 2!'),
+    writeln('Goodbye!'),
+    writeln('').
+
+process_choice(_) :-
+    writeln(''),
+    writeln('Invalid choice. Please enter a number between 1 and 4.'),
+    writeln(''),
+    main.
+
+% ============================================================================
+% APPLICATION LAUNCHERS
+% ============================================================================
+
+run_classes_app :-
+    catch(
+        (
+            unload_file('app/classes/demo.pl'),
+            consult('app/classes/demo.pl'),
+            writeln('Classes application loaded successfully.'),
+            writeln(''),
+            classes_main
+        ),
+        Error,
+        (
+            writeln(''),
+            writeln('ERROR: Failed to load Classes Management System.'),
+            format('Details: ~w~n', [Error]),
+            writeln('Please ensure the application files exist in app/classes/')
+        )
+    ).
+
+run_library_app :-
+    catch(
+        (
+            consult('app/library/demo.pl'),
+            writeln('Library application loaded successfully.'),
+            writeln(''),
+            library_main
+        ),
+        Error,
+        (
+            writeln(''),
+            writeln('ERROR: Failed to load Library Management System.'),
+            format('Details: ~w~n', [Error]),
+            writeln('Please ensure the application files exist in app/library/')
+        )
+    ).
+
+run_archives_app :-
+    catch(
+        (
+            consult('app/archives/demo.pl'),
+            writeln('Archives application loaded successfully.'),
+            writeln(''),
+            archives_main
+        ),
+        Error,
+        (
+            writeln(''),
+            writeln('ERROR: Failed to load Archives Management System.'),
+            format('Details: ~w~n', [Error]),
+            writeln('Please ensure the application files exist in app/archives/')
+        )
+    ).
+
+% ============================================================================
+% UTILITY FUNCTIONS
+% ============================================================================
+
+prompt_return_to_menu :-
+    writeln(''),
+    writeln('─────────────────────────────────────────────────────────────'),
+    write('Press Enter to return to main menu...'),
+    flush_output,
+    read_line_to_string(user_input, _),
+    writeln(''),
+    main.
+
+% ============================================================================
+% STARTUP
+% ============================================================================
+
+% Display welcome message on startup
+:- initialization(
+    (
+        writeln(''),
+        writeln('Welcome to COMP 481 Mini Project 2!'),
+        writeln('Type "main." to start the application.')
+    )
+).

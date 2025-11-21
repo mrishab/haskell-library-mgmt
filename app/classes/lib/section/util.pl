@@ -53,3 +53,11 @@ max_list([X], X).
 max_list([H|T], Max) :-
     max_list(T, TMax),
     (H > TMax -> Max = H ; Max = TMax).
+
+% Note: sections_on_campus/2 and sections_on_day/2 are defined in class/util.pl
+
+% Check if section is hybrid/blended
+is_hybrid_section(CRN) :-
+    class_section(_, CRN, _, _, _, _, blended, _, _, _).
+
+% Note: course_sections/2 is defined in course/util.pl

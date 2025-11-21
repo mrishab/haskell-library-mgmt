@@ -79,3 +79,66 @@ course_classes(CourseAtom, Classes) :-
     findall([ClassAtom, CRN, SectionAtom, InstructorID],
             class_section(ClassAtom, CRN, CourseAtom, SectionAtom, InstructorID, _, _, _, _, _),
             Classes).
+
+% Find courses with multiple sections (popular courses)
+popular_courses(PopularCourses) :-
+    findall([CourseAtom, Count],
+            (course(CourseAtom, _, _, _, _, _),
+             findall(CRN, class_section(_, CRN, CourseAtom, _, _, _, _, _, _, _), Sections),
+             list_length(Sections, Count),
+             Count > 1),
+            PopularCourses).
+
+% Generate detailed course offering report
+course_offering_report(CourseAtom) :-
+    course(CourseAtom, Faculty, Number, Name, Credits, Description),
+    upcase_atom(Faculty, FacultyUpper),
+    writeln(''),
+    writeln('═══════════════════════════════════════════════════════════'),
+    format('COURSE OFFERING REPORT: ~w ~w~n', [FacultyUpper, Number]),
+    writeln('═══════════════════════════════════════════════════════════'),
+    writeln(''),
+    format('Course Name: ~w~n', [Name]),
+    format('Credits: ~w~n', [Credits]),
+    format('Description: ~w~n', [Description]),
+    writeln(''),
+    writeln('SECTIONS OFFERED:'),
+    writeln(''),
+    findall([CRN, SectionAtom, InstructorID, Campus, Method, MaxEnroll],
+            class_section(_, CRN, CourseAtom, SectionAtom, InstructorID, Campus, 
+                         Method, MaxEnroll, _, _),
+            Sections),
+    print_course_sections(Sections),
+    writeln(''),
+    writeln('═══════════════════════════════════════════════════════════').
+
+% Helper to print course sections
+print_course_sections([]).
+print_course_sections([[CRN, Section, Instructor, Campus, Method, MaxEnroll]|Rest]) :-
+    format('  CRN ~w: Section ~w~n', [CRN, Section]),
+    format('    Instructor: ~w~n', [Instructor]),
+    format('    Campus: ~w~n', [Campus]),
+    format('    Method: ~w~n', [Method]),
+    format('    Max Enrollment: ~w~n', [MaxEnroll]),
+    writeln(''),
+    print_course_sections(Rest).
+
+% Get total capacity for a course across all sections
+total_course_capacity(CourseAtom, TotalCapacity) :-
+    findall(MaxEnroll,
+            class_section(_, _, CourseAtom, _, _, _, _, MaxEnroll, _, _),
+            Capacities),
+    sum_list(Capacities, TotalCapacity).
+
+% Helper to sum a list
+sum_list([], 0).
+sum_list([H|T], Sum) :-
+    sum_list(T, TSum),
+    Sum is H + TSum.
+
+% Find team-taught sections
+team_taught_sections(Sections) :-
+    findall([CRN, CourseAtom, InstructorID],
+            (class_section(_, CRN, CourseAtom, _, InstructorID, _, _, _, _, _),
+             is_list(InstructorID)),
+            Sections).

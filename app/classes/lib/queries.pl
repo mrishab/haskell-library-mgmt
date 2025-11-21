@@ -1,10 +1,3 @@
-:- consult('campus/queries.pl').
-:- consult('class/queries.pl').
-:- consult('class_times/queries.pl').
 :- consult('course/queries.pl').
-:- consult('faculty/queries.pl').
-:- consult('instructional_method/queries.pl').
 :- consult('instructor/queries.pl').
 :- consult('room/queries.pl').
-:- consult('schedule/queries.pl').
-:- consult('section/queries.pl').

@@ -89,3 +89,37 @@ instructors_for_course(CourseAtom, Instructors) :-
             class_section(_, _, CourseAtom, _, InstructorID, _, _, _, _, _),
             InstructorList),
     list_to_set(InstructorList, Instructors).
+
+% Generate instructor schedule report
+instructor_schedule(InstructorID) :-
+    instructor(InstructorID, name(First, Middle, Last)),
+    (Middle = '' -> 
+        format('~n═══════════════════════════════════════════════════════════~n', []),
+        format('INSTRUCTOR SCHEDULE: ~w ~w~n', [First, Last]),
+        format('═══════════════════════════════════════════════════════════~n~n', [])
+    ;
+        format('~n═══════════════════════════════════════════════════════════~n', []),
+        format('INSTRUCTOR SCHEDULE: ~w ~w ~w~n', [First, Middle, Last]),
+        format('═══════════════════════════════════════════════════════════~n~n', [])
+    ),
+    findall([CRN, CourseAtom, SectionAtom, Campus],
+            class_section(_, CRN, CourseAtom, SectionAtom, InstructorID, Campus, _, _, _, _),
+            Classes),
+    print_instructor_schedule(Classes),
+    writeln('═══════════════════════════════════════════════════════════').
+
+% Helper to print instructor schedule
+print_instructor_schedule([]).
+print_instructor_schedule([[CRN, CourseAtom, Section, Campus]|Rest]) :-
+    course(CourseAtom, Faculty, Number, Name, Credits, _),
+    upcase_atom(Faculty, FacultyUpper),
+    format('CRN ~w: ~w ~w - ~w~n', [CRN, FacultyUpper, Number, Name]),
+    format('  Section: ~w | Campus: ~w | Credits: ~w~n', [Section, Campus, Credits]),
+    % Get schedule info if available
+    (schedule(CRN, Day, StartTime, EndTime, _, _, _, _) ->
+        format('  Schedule: ~w ~w-~w~n', [Day, StartTime, EndTime])
+    ;
+        true
+    ),
+    writeln(''),
+    print_instructor_schedule(Rest).
