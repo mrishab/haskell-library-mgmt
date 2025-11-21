@@ -24,7 +24,7 @@ process_room_choice(1) :-
     rooms_on_floor(3, Rooms),
     writeln(''),
     writeln('Rooms on floor 3:'),
-    print_list(Rooms),
+    print_simple_list(Rooms),
     writeln(''),
     room_menu.
 
@@ -33,7 +33,7 @@ process_room_choice(2) :-
     rooms_in_building('ABD', Rooms),
     writeln(''),
     writeln('Rooms in ABD:'),
-    print_list(Rooms),
+    print_simple_list(Rooms),
     writeln(''),
     room_menu.
 

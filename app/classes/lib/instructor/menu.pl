@@ -44,7 +44,7 @@ process_instructor_choice(3) :-
     instructors_for_course(comp_150, Instructors),
     writeln(''),
     writeln('Instructors for COMP 150:'),
-    print_list(Instructors),
+    print_simple_list(Instructors),
     writeln(''),
     instructor_menu.
 

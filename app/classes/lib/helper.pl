@@ -2,9 +2,6 @@
 % HELPER UTILITIES
 % ============================================================================
 
-% member/2 - Check if element is in list
-member(X, [X|_]).
-member(X, [_|T]) :- member(X, T).
 
 % append/3 - Concatenate two lists
 append([], L, L).
@@ -33,7 +30,7 @@ subset([H|T], Set) :-
 % ============================================================================
 
 % Print a generic list with bullet points
-print_list([]).
-print_list([H|T]) :-
+print_simple_list([]).
+print_simple_list([H|T]) :-
     format('  - ~w~n', [H]),
-    print_list(T).
+    print_simple_list(T).
