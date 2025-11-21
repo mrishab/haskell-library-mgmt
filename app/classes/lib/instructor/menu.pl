@@ -11,11 +11,11 @@ instructor_menu :-
     writeln(''),
     writeln('=== INSTRUCTOR QUERIES ==='),
     writeln(''),
-    writeln('  1. Find courses by instructor'),
-    writeln('  2. Get instructor workload'),
-    writeln('  3. Find instructors for a course'),
-    writeln('  4. Generate instructor schedule'),
-    writeln('  5. Find team-taught sections'),
+    writeln('  1. Show courses taught by Farshad Eshghi'),
+    writeln('  2. Show Jason Harrison\'s workload'),
+    writeln('  3. Show instructors for COMP 150'),
+    writeln('  4. Show Farshad Eshghi\'s schedule'),
+    writeln('  5. Show team-taught sections'),
     writeln('  6. Back to main menu'),
     writeln(''),
     write('Enter your choice: '),
@@ -23,45 +23,45 @@ instructor_menu :-
     process_instructor_choice(Choice).
 
 process_instructor_choice(1) :-
-    write('Enter instructor name (in quotes): '),
-    read(Instructor),
-    courses_by_instructor(Instructor, Courses),
+    !,
+    courses_by_instructor(inst_eshghi, Courses),
     writeln(''),
-    format('Courses taught by ~w:~n', [Instructor]),
+    writeln('Courses taught by Farshad Eshghi:'),
     print_instructor_course_list(Courses),
+    writeln(''),
     instructor_menu.
 
 process_instructor_choice(2) :-
-    write('Enter instructor name (in quotes): '),
-    read(Instructor),
-    instructor_load(Instructor, Load),
+    !,
+    instructor_load(inst_harrison, Load),
     writeln(''),
-    format('~w teaches ~w sections~n', [Instructor, Load]),
+    format('Jason Harrison teaches ~w sections~n', [Load]),
+    writeln(''),
     instructor_menu.
 
 process_instructor_choice(3) :-
-    write('Enter faculty code: '),
-    read(Faculty),
-    write('Enter course number: '),
-    read(Number),
-    instructors_for_course(Faculty, Number, Instructors),
+    !,
+    instructors_for_course(comp_150, Instructors),
     writeln(''),
-    format('Instructors for ~w ~w:~n', [Faculty, Number]),
+    writeln('Instructors for COMP 150:'),
     print_list(Instructors),
+    writeln(''),
     instructor_menu.
 
 process_instructor_choice(4) :-
-    write('Enter instructor name (in quotes): '),
-    read(Instructor),
+    !,
     writeln(''),
-    instructor_schedule(Instructor),
+    instructor_schedule(inst_eshghi),
+    writeln(''),
     instructor_menu.
 
 process_instructor_choice(5) :-
+    !,
     team_taught_sections(Sections),
     writeln(''),
     writeln('Team-taught sections:'),
     print_team_taught(Sections),
+    writeln(''),
     instructor_menu.
 
 process_instructor_choice(6) :- 

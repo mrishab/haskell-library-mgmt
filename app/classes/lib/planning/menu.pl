@@ -12,11 +12,11 @@ planning_menu :-
     writeln(''),
     writeln('=== PREREQUISITE AND COURSE PLANNING ==='),
     writeln(''),
-    writeln('  1. Check direct prerequisites'),
-    writeln('  2. Find all prerequisites (recursive)'),
-    writeln('  3. Find entry-level courses'),
-    writeln('  4. Check course eligibility'),
-    writeln('  5. Find corequisites'),
+    writeln('  1. Show direct prerequisites for COMP 230'),
+    writeln('  2. Show all prerequisites for COMP 230 (recursive)'),
+    writeln('  3. Show entry-level COMP courses'),
+    writeln('  4. Check eligibility for COMP 230 (with COMP 150 completed)'),
+    writeln('  5. Show corequisites for COMP 230'),
     writeln('  6. Back to main menu'),
     writeln(''),
     write('Enter your choice: '),
@@ -24,58 +24,48 @@ planning_menu :-
     process_planning_choice(Choice).
 
 process_planning_choice(1) :-
-    write('Enter faculty code: '),
-    read(Faculty),
-    write('Enter course number: '),
-    read(Number),
-    direct_prerequisites(Faculty, Number, Prereqs),
+    !,
+    direct_prerequisites(comp_230, Prereqs),
     writeln(''),
-    format('Direct prerequisites for ~w ~w:~n', [Faculty, Number]),
+    writeln('Direct prerequisites for COMP 230:'),
     print_prereq_list(Prereqs),
+    writeln(''),
     planning_menu.
 
 process_planning_choice(2) :-
-    write('Enter faculty code: '),
-    read(Faculty),
-    write('Enter course number: '),
-    read(Number),
-    all_prerequisites(Faculty, Number, AllPrereqs),
+    !,
+    all_prerequisites(comp_230, AllPrereqs),
     writeln(''),
-    format('All prerequisites for ~w ~w:~n', [Faculty, Number]),
+    writeln('All prerequisites for COMP 230 (recursive):'),
     print_prereq_list(AllPrereqs),
+    writeln(''),
     planning_menu.
 
 process_planning_choice(3) :-
-    write('Enter faculty code: '),
-    read(Faculty),
-    entry_level_courses(Faculty, Courses),
+    !,
+    entry_level_courses_in_faculty(comp, Courses),
     writeln(''),
-    format('Entry-level ~w courses (no prerequisites):~n', [Faculty]),
-    print_course_list(Courses),
+    writeln('Entry-level COMP courses (no prerequisites):'),
+    print_prereq_list(Courses),
+    writeln(''),
     planning_menu.
 
 process_planning_choice(4) :-
-    write('Enter faculty code for target course: '),
-    read(Faculty),
-    write('Enter course number for target course: '),
-    read(Number),
-    write('Enter list of completed courses as [[fac1,num1],[fac2,num2],...]: '),
-    read(Completed),
+    !,
     writeln(''),
-    (can_take_course(Faculty, Number, Completed) ->
-        format('✓ Eligible to take ~w ~w~n', [Faculty, Number]) ;
-        format('✗ Not eligible to take ~w ~w (missing prerequisites)~n', [Faculty, Number])),
+    (can_take_course(comp_230, [comp_150]) ->
+        writeln('✓ Eligible to take COMP 230 with COMP 150 completed') ;
+        writeln('✗ Not eligible to take COMP 230 (missing prerequisites)')),
+    writeln(''),
     planning_menu.
 
 process_planning_choice(5) :-
-    write('Enter faculty code: '),
-    read(Faculty),
-    write('Enter course number: '),
-    read(Number),
-    find_corequisites(Faculty, Number, Coreqs),
+    !,
+    find_corequisites(comp_230, Coreqs),
     writeln(''),
-    format('Corequisites for ~w ~w:~n', [Faculty, Number]),
+    writeln('Corequisites for COMP 230:'),
     print_prereq_list(Coreqs),
+    writeln(''),
     planning_menu.
 
 process_planning_choice(6) :- 

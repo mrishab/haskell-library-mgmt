@@ -11,10 +11,10 @@ report_menu :-
     writeln(''),
     writeln('=== GENERATE REPORTS ==='),
     writeln(''),
-    writeln('  1. Course offering report'),
-    writeln('  2. Instructor schedule report'),
-    writeln('  3. Campus statistics'),
-    writeln('  4. Faculty statistics'),
+    writeln('  1. Show COMP 150 offering report'),
+    writeln('  2. Show Farshad Eshghi schedule report'),
+    writeln('  3. Show campus statistics'),
+    writeln('  4. Show COMP faculty statistics'),
     writeln('  5. Back to main menu'),
     writeln(''),
     write('Enter your choice: '),
@@ -22,22 +22,21 @@ report_menu :-
     process_report_choice(Choice).
 
 process_report_choice(1) :-
-    write('Enter faculty code: '),
-    read(Faculty),
-    write('Enter course number: '),
-    read(Number),
+    !,
     writeln(''),
-    course_offering_report(Faculty, Number),
+    course_offering_report(comp_150),
+    writeln(''),
     report_menu.
 
 process_report_choice(2) :-
-    write('Enter instructor name (in quotes): '),
-    read(Instructor),
+    !,
     writeln(''),
-    instructor_schedule(Instructor),
+    instructor_schedule(inst_eshghi),
+    writeln(''),
     report_menu.
 
 process_report_choice(3) :-
+    !,
     writeln(''),
     writeln('=== CAMPUS STATISTICS ==='),
     sections_on_campus(ab, AbSections),
@@ -49,19 +48,21 @@ process_report_choice(3) :-
     format('Abbotsford campus: ~w sections~n', [AbCount]),
     format('Chilliwack campus: ~w sections~n', [ChCount]),
     format('Online: ~w sections~n', [OnCount]),
+    writeln(''),
     report_menu.
 
 process_report_choice(4) :-
-    write('Enter faculty code: '),
-    read(Faculty),
+    !,
     writeln(''),
-    format('=== ~w FACULTY STATISTICS ===~n', [Faculty]),
-    courses_in_faculty(Faculty, Courses),
+    writeln('=== COMP FACULTY STATISTICS ==='),
+    courses_in_faculty(comp, Courses),
     list_length(Courses, CourseCount),
     format('Total courses: ~w~n', [CourseCount]),
-    findall(CRN, class_section(CRN, Faculty, _, _, _, _, _, _, _), Sections),
+    findall(CRN, (class_section(_, CRN, CourseAtom, _, _, _, _, _, _, _),
+                  course(CourseAtom, comp, _, _, _, _)), Sections),
     list_length(Sections, SectionCount),
     format('Total sections: ~w~n', [SectionCount]),
+    writeln(''),
     report_menu.
 
 process_report_choice(5) :- 

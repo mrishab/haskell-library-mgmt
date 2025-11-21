@@ -4,11 +4,20 @@
 
 % Get direct prerequisites for a course
 direct_prerequisites(CourseAtom, Prerequisites) :-
-    findall(PrereqAtom, prerequisite(CourseAtom, PrereqAtom), Prerequisites).
+    findall(
+        [Faculty, Number],
+        (prerequisite(CourseAtom, PrereqAtom), course(PrereqAtom, Faculty, Number, _, _, _)),
+        Prerequisites
+    ).
 
 % Get all prerequisites recursively (including prerequisites of prerequisites)
 all_prerequisites(CourseAtom, AllPrereqs) :-
-    all_prerequisites_helper(CourseAtom, [], AllPrereqs).
+    all_prerequisites_helper(CourseAtom, [], AllPrereqAtoms),
+    findall(
+        [Faculty, Number],
+        (member(PrereqAtom, AllPrereqAtoms), course(PrereqAtom, Faculty, Number, _, _, _)),
+        AllPrereqs
+    ).
 
 all_prerequisites_helper(CourseAtom, Visited, AllPrereqs) :-
     findall(PrereqAtom, 
@@ -47,17 +56,19 @@ courses_requiring(PrereqCourseAtom, Courses) :-
 
 % Get entry-level courses (courses with no prerequisites)
 entry_level_courses(Courses) :-
-    findall(CourseAtom, 
-            (course(CourseAtom, _, _, _, _, _),
-             \+ has_prerequisites(CourseAtom)),
-            Courses).
+    findall(
+        [Faculty, Number],
+        (course(CourseAtom, Faculty, Number, _, _, _), \+ has_prerequisites(CourseAtom)),
+        Courses
+    ).
 
 % Get entry-level courses in a specific faculty
 entry_level_courses_in_faculty(Faculty, Courses) :-
-    findall(CourseAtom,
-            (course(CourseAtom, Faculty, _, _, _, _),
-             \+ has_prerequisites(CourseAtom)),
-            Courses).
+    findall(
+        [Faculty, Number],
+        (course(CourseAtom, Faculty, Number, _, _, _), \+ has_prerequisites(CourseAtom)),
+        Courses
+    ).
 
 % Check if Course1 is a prerequisite for Course2 (directly or indirectly)
 is_prerequisite_for(Course1, Course2) :-

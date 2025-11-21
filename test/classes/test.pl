@@ -17,7 +17,16 @@ test_basic_queries :-
     writeln('========================================'),
     writeln(''),
     
-    writeln('1.1 Testing course_level/2 - Finding course levels:'),
+    writeln('1.1 Testing courses_in_faculty/2 - Finding courses by faculty:'),
+    courses_in_faculty(comp, CompCourses),
+    list_length(CompCourses, CompCount),
+    format('  Found ~w COMP courses~n', [CompCount]),
+    courses_in_faculty(bio, BioCourses),
+    list_length(BioCourses, BioCount),
+    format('  Found ~w BIO courses~n', [BioCount]),
+    writeln(''),
+    
+    writeln('1.2 Testing course_level/2 - Finding course levels:'),
     course_level(comp_150, Level1),
     format('  COMP 150 is level ~w (expected: 1)~n', [Level1]),
     course_level(bio_320, Level2),
@@ -26,13 +35,13 @@ test_basic_queries :-
     format('  AGRI 124 is level ~w (expected: 1)~n', [Level3]),
     writeln(''),
     
-    writeln('1.2 Testing course atoms - Checking course data:'),
+    writeln('1.3 Testing course atoms - Checking course data:'),
     (course(comp_150, _, _, Name150, Credits150, _) ->
         format('  COMP 150: ~w (~w credits)~n', [Name150, Credits150]) ;
         writeln('  Failed to find COMP 150')),
     writeln(''),
     
-    writeln('1.3 Testing course_display_code/2:'),
+    writeln('1.4 Testing course_display_code/2:'),
     course_display_code(comp_150, Code150),
     format('  comp_150 displays as: ~w~n', [Code150]),
     writeln('').

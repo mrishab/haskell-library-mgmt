@@ -12,13 +12,13 @@ schedule_menu :-
     writeln(''),
     writeln('=== SCHEDULE AND SECTION QUERIES ==='),
     writeln(''),
-    writeln('  1. Find sections for a course'),
-    writeln('  2. Find sections on a specific campus'),
-    writeln('  3. Find sections on a specific day'),
-    writeln('  4. Check if sections conflict'),
+    writeln('  1. Show sections for COMP 150'),
+    writeln('  2. Show sections on Abbotsford campus'),
+    writeln('  3. Show sections on Tuesday'),
+    writeln('  4. Check conflict between CRN 30101 and 30102'),
     writeln('  5. Find online sections'),
     writeln('  6. Find hybrid/blended sections'),
-    writeln('  7. Get course total capacity'),
+    writeln('  7. Show total capacity for COMP 150'),
     writeln('  8. Back to main menu'),
     writeln(''),
     write('Enter your choice: '),
@@ -26,68 +26,66 @@ schedule_menu :-
     process_schedule_choice(Choice).
 
 process_schedule_choice(1) :-
-    write('Enter faculty code: '),
-    read(Faculty),
-    write('Enter course number: '),
-    read(Number),
-    course_sections(Faculty, Number, Sections),
+    !,
+    course_sections(comp_150, Sections),
     writeln(''),
-    format('Sections for ~w ~w:~n', [Faculty, Number]),
+    writeln('Sections for COMP 150:'),
     print_section_list(Sections),
+    writeln(''),
     schedule_menu.
 
 process_schedule_choice(2) :-
-    write('Enter campus code (ab, ch, ho, on): '),
-    read(Campus),
-    sections_on_campus(Campus, Sections),
+    !,
+    sections_on_campus(ab, Sections),
     list_length(Sections, Count),
     writeln(''),
-    format('Found ~w sections on ~w campus~n', [Count, Campus]),
+    format('Found ~w sections on Abbotsford campus~n', [Count]),
+    writeln(''),
     schedule_menu.
 
 process_schedule_choice(3) :-
-    write('Enter day (monday, tuesday, wednesday, thursday, friday): '),
-    read(Day),
-    sections_on_day(Day, Sections),
+    !,
+    sections_on_day(tuesday, Sections),
     list_length(Sections, Count),
     writeln(''),
-    format('Found ~w sections on ~w~n', [Count, Day]),
+    format('Found ~w sections on Tuesday~n', [Count]),
     print_day_sections(Sections),
+    writeln(''),
     schedule_menu.
 
 process_schedule_choice(4) :-
-    write('Enter first CRN: '),
-    read(CRN1),
-    write('Enter second CRN: '),
-    read(CRN2),
+    !,
     writeln(''),
-    (time_conflict(CRN1, CRN2) ->
-        format('CRN ~w and ~w have TIME CONFLICTS~n', [CRN1, CRN2]) ;
-        format('CRN ~w and ~w are COMPATIBLE~n', [CRN1, CRN2])),
+    (time_conflict(30101, 30102) ->
+        writeln('CRN 30101 and 30102 have TIME CONFLICTS') ;
+        writeln('CRN 30101 and 30102 are COMPATIBLE')),
+    writeln(''),
     schedule_menu.
 
 process_schedule_choice(5) :-
+    !,
     findall(CRN, is_online_section(CRN), OnlineCRNs),
     list_length(OnlineCRNs, Count),
     writeln(''),
     format('Found ~w online sections: ~w~n', [Count, OnlineCRNs]),
+    writeln(''),
     schedule_menu.
 
 process_schedule_choice(6) :-
+    !,
     findall(CRN, is_hybrid_section(CRN), HybridCRNs),
     list_length(HybridCRNs, Count),
     writeln(''),
     format('Found ~w hybrid sections: ~w~n', [Count, HybridCRNs]),
+    writeln(''),
     schedule_menu.
 
 process_schedule_choice(7) :-
-    write('Enter faculty code: '),
-    read(Faculty),
-    write('Enter course number: '),
-    read(Number),
-    total_course_capacity(Faculty, Number, Capacity),
+    !,
+    total_course_capacity(comp_150, Capacity),
     writeln(''),
-    format('Total capacity for ~w ~w: ~w students~n', [Faculty, Number, Capacity]),
+    format('Total capacity for COMP 150: ~w students~n', [Capacity]),
+    writeln(''),
     schedule_menu.
 
 process_schedule_choice(8) :- 

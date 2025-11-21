@@ -11,12 +11,13 @@ course_menu :-
     writeln(''),
     writeln('=== COURSE INFORMATION QUERIES ==='),
     writeln(''),
-    writeln('  1. List all courses in a faculty'),
-    writeln('  2. Find courses by credit value'),
-    writeln('  3. Find courses at a specific level'),
-    writeln('  4. Get detailed course information'),
-    writeln('  5. Find popular courses (multiple sections)'),
-    writeln('  6. Back to main menu'),
+    writeln('  1. List all COMP courses'),
+    writeln('  2. List all BIO courses'),
+    writeln('  3. Find 3-credit courses'),
+    writeln('  4. Find level 1 courses'),
+    writeln('  5. Show COMP 150 details'),
+    writeln('  6. Show popular courses (multiple sections)'),
+    writeln('  7. Back to main menu'),
     writeln(''),
     write('Enter your choice: '),
     read(Choice),
@@ -24,57 +25,50 @@ course_menu :-
 
 process_course_choice(1) :-
     !,
-    write('Enter faculty code (e.g., comp, bio, agri): '),
-    read(Faculty),
-    (   courses_in_faculty(Faculty, Courses)
-    ->  (   writeln(''),
-            format('Courses in ~w:~n', [Faculty]),
-            print_course_list(Courses),
-            writeln('')
-        )
-    ;   (   writeln(''),
-            format('No courses found for faculty: ~w~n', [Faculty]),
-            writeln('')
-        )
-    ),
+    courses_in_faculty(comp, Courses),
+    writeln(''),
+    writeln('Courses in COMP:'),
+    print_course_list(Courses),
+    writeln(''),
     course_menu.
 
 process_course_choice(2) :-
     !,
-    write('Enter credit value (e.g., 3.0, 4.0): '),
-    read(Credits),
-    courses_with_credits(Credits, Courses),
-    list_length(Courses, Count),
+    courses_in_faculty(bio, Courses),
     writeln(''),
-    format('Found ~w courses with ~w credits:~n', [Count, Credits]),
-    print_course_list_with_faculty(Courses),
+    writeln('Courses in BIO:'),
+    print_course_list(Courses),
     writeln(''),
     course_menu.
 
 process_course_choice(3) :-
     !,
-    write('Enter course level (0-4): '),
-    read(Level),
-    courses_at_level(Level, Courses),
+    courses_with_credits(3.0, Courses),
     list_length(Courses, Count),
     writeln(''),
-    format('Found ~w level-~w courses:~n', [Count, Level]),
+    format('Found ~w courses with 3.0 credits:~n', [Count]),
     print_course_list_with_faculty(Courses),
     writeln(''),
     course_menu.
 
 process_course_choice(4) :-
     !,
-    write('Enter faculty code: '),
-    read(Faculty),
-    write('Enter course number: '),
-    read(Number),
+    courses_at_level(1, Courses),
+    list_length(Courses, Count),
     writeln(''),
-    course_offering_report(Faculty, Number),
+    format('Found ~w level-1 courses:~n', [Count]),
+    print_course_list_with_faculty(Courses),
     writeln(''),
     course_menu.
 
 process_course_choice(5) :-
+    !,
+    writeln(''),
+    course_offering_report(comp_150),
+    writeln(''),
+    course_menu.
+
+process_course_choice(6) :-
     !,
     popular_courses(Courses),
     writeln(''),
@@ -83,7 +77,7 @@ process_course_choice(5) :-
     writeln(''),
     course_menu.
 
-process_course_choice(6) :- 
+process_course_choice(7) :- 
     !.  % Cut to return to main menu
 process_course_choice(_) :-
     writeln('Invalid choice.'),

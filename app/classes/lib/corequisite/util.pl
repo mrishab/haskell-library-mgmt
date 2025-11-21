@@ -4,7 +4,11 @@
 
 % Get all corequisites for a course
 find_corequisites(CourseAtom, Corequisites) :-
-    findall(CoreqAtom, corequisite(CourseAtom, CoreqAtom), Corequisites).
+    findall(
+        [Faculty, Number],
+        (corequisite(CourseAtom, CoreqAtom), course(CoreqAtom, Faculty, Number, _, _, _)),
+        Corequisites
+    ).
 
 % Check if a course has any corequisites
 has_corequisites(CourseAtom) :-

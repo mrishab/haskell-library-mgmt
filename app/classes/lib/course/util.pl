@@ -53,16 +53,20 @@ is_fourth_year_course(CourseAtom) :-
 
 % Get all courses for a faculty
 courses_in_faculty(Faculty, Courses) :-
-    findall(CourseAtom, course(CourseAtom, Faculty, _, _, _, _), Courses).
+    findall([Number, Name, Credits], 
+            course(_, Faculty, Number, Name, Credits, _), 
+            Courses).
 
 % Get all courses with specific credit value
 courses_with_credits(Credits, Courses) :-
-    findall(CourseAtom, course(CourseAtom, _, _, _, Credits, _), Courses).
+    findall([Faculty, Number, Name], 
+            course(_, Faculty, Number, Name, Credits, _), 
+            Courses).
 
 % Get all courses at a specific level
 courses_at_level(Level, Courses) :-
-    findall(CourseAtom, 
-            (course(CourseAtom, _, Number, _, _, _),
+    findall([Faculty, Number, Name], 
+            (course(_, Faculty, Number, Name, _, _),
              (number(Number) -> Num = Number ; atom_number(Number, Num)),
              Num >= Level * 100,
              Num < (Level + 1) * 100),
@@ -70,8 +74,8 @@ courses_at_level(Level, Courses) :-
 
 % Get all section atoms for a specific course
 course_sections(CourseAtom, Sections) :-
-    findall(SectionAtom,
-            class_section(_, _, CourseAtom, SectionAtom, _, _, _, _, _, _),
+    findall([CRN, SectionAtom, InstructorID, Campus],
+            class_section(_, CRN, CourseAtom, SectionAtom, InstructorID, Campus, _, _, _, _),
             Sections).
 
 % Get all class information for a course
@@ -138,7 +142,8 @@ sum_list([H|T], Sum) :-
 
 % Find team-taught sections
 team_taught_sections(Sections) :-
-    findall([CRN, CourseAtom, InstructorID],
-            (class_section(_, CRN, CourseAtom, _, InstructorID, _, _, _, _, _),
-             is_list(InstructorID)),
+    findall([CRN, Faculty, Number, InstructorList],
+            (class_section(_, CRN, CourseAtom, _, InstructorList, _, _, _, _, _),
+             is_list(InstructorList),
+             course(CourseAtom, Faculty, Number, _, _, _)),
             Sections).

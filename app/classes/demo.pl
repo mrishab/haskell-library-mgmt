@@ -48,18 +48,19 @@ show_main_menu :-
     read(Choice),
     process_main_choice(Choice).
 
-process_main_choice(1) :- course_menu, show_main_menu.
-process_main_choice(2) :- instructor_menu, show_main_menu.
-process_main_choice(3) :- schedule_menu, show_main_menu.
-process_main_choice(4) :- room_menu, show_main_menu.
-process_main_choice(5) :- planning_menu, show_main_menu.
-process_main_choice(6) :- report_menu, show_main_menu.
-process_main_choice(7) :- run_tests, show_main_menu.
+process_main_choice(1) :- !, course_menu, show_main_menu.
+process_main_choice(2) :- !, instructor_menu, show_main_menu.
+process_main_choice(3) :- !, schedule_menu, show_main_menu.
+process_main_choice(4) :- !, room_menu, show_main_menu.
+process_main_choice(5) :- !, planning_menu, show_main_menu.
+process_main_choice(6) :- !, report_menu, show_main_menu.
+process_main_choice(7) :- !, run_tests, show_main_menu.
 process_main_choice(8) :- 
     writeln(''),
     writeln('Returning to main menu...'),
-    !.
+    writeln('').
 process_main_choice(_) :-
+    !,
     writeln('Invalid choice. Please try again.'),
     show_main_menu.
 
@@ -93,4 +94,4 @@ help :-
 % ============================================================================
 
 :- writeln('UFV Course Management System loaded successfully!').
-:- writeln('Type "classes_main." to start, "help." for guidance.').
+:- writeln('Type "classes_main." or "main." to start, "help." for guidance.').

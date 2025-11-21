@@ -4,19 +4,19 @@
 
 % Get class CRN
 class_crn(ClassAtom, CRN) :-
-    class_section(ClassAtom, CRN, _, _, _, _, _, _, _).
+    class_section(ClassAtom, CRN, _, _, _, _, _, _, _, _).
 
 % Get class course atom
 class_course(ClassAtom, CourseAtom) :-
-    class_section(ClassAtom, _, CourseAtom, _, _, _, _, _, _).
+    class_section(ClassAtom, _, CourseAtom, _, _, _, _, _, _, _).
 
 % Get class section atom
 class_section_atom(ClassAtom, SectionAtom) :-
-    class_section(ClassAtom, _, _, SectionAtom, _, _, _, _, _).
+    class_section(ClassAtom, _, _, SectionAtom, _, _, _, _, _, _).
 
 % Get class instructor
 class_instructor(ClassAtom, InstructorID) :-
-    class_section(ClassAtom, _, _, _, InstructorID, _, _, _, _).
+    class_section(ClassAtom, _, _, _, InstructorID, _, _, _, _, _).
 
 % Get class campus
 class_campus(ClassAtom, Campus) :-
