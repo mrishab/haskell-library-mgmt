@@ -5,7 +5,7 @@
 % base and reasoning system using the new data structures.
 % ============================================================================
 
-:- consult('../../src/classes/queries.pl').
+:- consult('../../app/classes/queries.pl').
 
 % ============================================================================
 % TEST SECTION 1: BASIC COURSE QUERIES

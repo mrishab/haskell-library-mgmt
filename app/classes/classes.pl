@@ -5,7 +5,7 @@
 % It provides a user-friendly interface for querying course information.
 % ============================================================================
 
-:- consult('../src/classes/queries/queries.pl').
+:- consult('queries/queries.pl').
 
 % ============================================================================
 % MAIN MENU SYSTEM
