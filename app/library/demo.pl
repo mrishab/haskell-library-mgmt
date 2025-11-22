@@ -2,7 +2,16 @@
 % LIBRARY MANAGEMENT SYSTEM - Demo Application
 % ============================================================================
 
-:- consult('library.pl').
+:- consult('lib/kb.pl').
+:- consult('lib/book/queries.pl').
+:- consult('lib/book/print.pl').
+:- consult('lib/book/menu.pl').
+:- consult('lib/member/queries.pl').
+:- consult('lib/member/print.pl').
+:- consult('lib/member/menu.pl').
+:- consult('lib/loan/queries.pl').
+:- consult('lib/loan/print.pl').
+:- consult('lib/loan/menu.pl').
 
 % ============================================================================
 % MAIN ENTRY POINT
@@ -11,43 +20,41 @@
 library_main :-
     writeln(''),
     writeln('╔════════════════════════════════════════════════════════════╗'),
-    writeln('║         LIBRARY MANAGEMENT SYSTEM - DEMO                   ║'),
+    writeln('║         LIBRARY MANAGEMENT SYSTEM - MAIN MENU              ║'),
     writeln('╚════════════════════════════════════════════════════════════╝'),
     writeln(''),
-    writeln('This is a demo application for the Library Management System.'),
-    writeln(''),
-    library_demo,
-    writeln(''),
-    writeln('Demo completed. Returning to main menu...').
+    show_main_menu.
 
-% ============================================================================
-% DEMO QUERIES
-% ============================================================================
+show_main_menu :-
+    writeln('Please select an option:'),
+    writeln(''),
+    writeln('  1. Book Queries'),
+    writeln('  2. Member Queries'),
+    writeln('  3. Loan Queries'),
+    writeln('  4. Exit'),
+    writeln(''),
+    write('Enter your choice (1-4): '),
+    read_line_to_string(user_input, Input),
+    (   number_string(Choice, Input)
+    ->  process_main_choice(Choice)
+    ;   writeln('Invalid input.'), show_main_menu
+    ).
 
-library_demo :-
-    writeln('=== LIBRARY DEMO ==='),
+process_main_choice(1) :- !, book_menu, show_main_menu.
+process_main_choice(2) :- !, member_menu, show_main_menu.
+process_main_choice(3) :- !, loan_menu, show_main_menu.
+process_main_choice(4) :- 
     writeln(''),
-    
-    % All currently available book titles
-    writeln('Available Books:'),
-    findall(Title, (available(BID), book(BID, Title, _, _, _)), Available),
-    print_list(Available),
-    writeln(''),
-    
-    % Books borrowed by Bob Smith
-    writeln('Books Borrowed by Bob Smith:'),
-    findall(BookTitle, borrowed_by('Bob Smith', BookTitle), BorrowedByBob),
-    print_list(BorrowedByBob),
+    writeln('Exiting Library Management System...'),
     writeln('').
-
-% Helper to print a list
-print_list([]).
-print_list([H|T]) :-
-    format('  - ~w~n', [H]),
-    print_list(T).
+process_main_choice(_) :-
+    !,
+    writeln('Invalid choice. Please try again.'),
+    show_main_menu.
 
 % ============================================================================
 % INITIALIZATION
 % ============================================================================
 
 :- writeln('Library Management System loaded successfully!').
+:- writeln('Type "library_main." to start.').
